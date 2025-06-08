@@ -1,36 +1,26 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+- in project page it have list of features that if i click in feature it will go to feature page that will display Tool that use to develop this feature like library , framework,software etc.. and Task will show what to do in that feature Contribute will show name of contributes in that feature and Bug it will show bug in this feature and Time will show time that spend on That feature(count by date like how many day you spend of that feature)
+- in project page will have markdown text editor for other component that i want to include like about this project, how to install etc..
+  -it will have percentage display progress of project according to features
 
-## Getting Started
+- i want to integrate with github
+- i want chart or graph component (but still don't know what should i display)
 
-First, run the development server:
+Projects page
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- show all project
+- can create(when create user have to input: [projectName,deadline,github-repository-url]) and delete
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Project page
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- display list of all features in current project :✅
+- display git commit graph :✅
+- display percentage of progress base on finished feature :✅
+- can create(when create feature , user have to input: [featureName]) and delete feature
+- display list of all task : what task you have to do to finish this feature (you can change status which is "To do, In progress , Done"), Due date
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Task page
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- tools : and can attach link of document e.g. lucide react, elasticSearch, VM, AntD, sysmon
+- codeblock e.g. price := 10 , func main() {fmt.print("Kendrick is Saviour")} DOING // if you want to add note or something use this
+- bug : call github issue api only open and close issue
+- contribute: who do this feature

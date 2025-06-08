@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+.features-box {
+  @apply border border-teal-100 p-4 my-4 mx-6;
+  @apply overflow-y-auto overflow-x-auto whitespace-nowrap;
+  @apply max-w-[950px] max-h-[500px];
+}

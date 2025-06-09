@@ -64,7 +64,6 @@ function TaskDetail() {
     () =>
       _.debounce(async (content: string) => {
         if (!task) return;
-        console.log("call update description");
         try {
           if (task.descriptions.length > 0) {
             await axios.put(
@@ -102,7 +101,6 @@ function TaskDetail() {
             );
             setReload(true);
           }
-          console.log(task.data);
         } catch (error) {
           console.error("Error fetching features:", error);
         }
@@ -115,7 +113,6 @@ function TaskDetail() {
       debouncedFetchTask(taskId);
     }
     setReload(false);
-    console.log("reload");
     return () => {
       debouncedFetchTask.cancel();
     };

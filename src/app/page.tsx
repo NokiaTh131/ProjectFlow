@@ -12,6 +12,7 @@ export interface Project {
   name: string;
   githubUrl?: string;
   deadLine: Date;
+  finished: string;
 }
 
 function Home() {
@@ -220,7 +221,9 @@ function Home() {
             >
               {projects.map((project, index) => {
                 const deadlineStatus = project.deadLine
-                  ? getDeadlineStatus(project.deadLine)
+                  ? project.finished === "finish"
+                    ? null
+                    : getDeadlineStatus(project.deadLine)
                   : null;
 
                 return (
@@ -346,7 +349,11 @@ function Home() {
                           <span>Project #{project.id}</span>
                           <span className="flex items-center gap-1">
                             <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                            Active
+                            {project.finished === "finish" ? (
+                              <div className="text-teal-400">Done</div>
+                            ) : (
+                              "Active"
+                            )}
                           </span>
                         </div>
                       </div>

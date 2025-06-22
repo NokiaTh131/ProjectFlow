@@ -1,8 +1,8 @@
 "use client";
 
 import { FC, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Plus, AlertCircle } from "lucide-react";
+import { useThemeClasses } from '../hooks/useThemeClasses';
 
 interface CreateFeatureModalProps {
   Label: string;
@@ -20,6 +20,7 @@ const CreateFeatureModal: FC<CreateFeatureModalProps> = ({
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const theme = useThemeClasses();
 
   // Reset form when modal opens
   useEffect(() => {
@@ -44,14 +45,11 @@ const CreateFeatureModal: FC<CreateFeatureModalProps> = ({
     setIsLoading(true);
     setError("");
 
-    // Simulate API call delay for better UX
-    setTimeout(() => {
-      onCreate(name.trim());
-      setName("");
-      setError("");
-      setIsLoading(false);
-      onClose();
-    }, 800);
+    onCreate(name.trim());
+    setName("");
+    setError("");
+    setIsLoading(false);
+    onClose();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -63,162 +61,77 @@ const CreateFeatureModal: FC<CreateFeatureModalProps> = ({
     }
   };
 
-  const overlayVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-    exit: { opacity: 0 },
-  };
 
-  const modalVariants = {
-    hidden: {
-      opacity: 0,
-      scale: 0.8,
-      y: -50,
-    },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      },
-    },
-    exit: {
-      opacity: 0,
-      scale: 0.8,
-      y: -50,
-      transition: {
-        duration: 0.2,
-      },
-    },
-  };
-
-  const buttonVariants = {
-    hover: { scale: 1.02 },
-    tap: { scale: 0.98 },
-  };
-
-  const inputVariants = {
-    focus: {
-      scale: 1.01,
-      borderColor: "#14b8a6",
-      boxShadow: "0 0 0 3px rgba(20, 184, 166, 0.1)",
-    },
-  };
+  if (!isOpen) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          variants={overlayVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          onClick={onClose}
-        >
-          {/* Backdrop with blur effect */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-
-          {/* Modal */}
-          <motion.div
-            className="relative bg-gradient-to-br from-slate-900 to-slate-800 border border-teal-200/20 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
-            variants={modalVariants}
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={handleKeyPress}
-          >
-            {/* Animated background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-r from-teal-500/5 to-cyan-500/5 animate-pulse" />
-
-            {/* Header */}
-            <div className="relative flex items-center justify-between p-6 border-b border-teal-200/10">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-teal-500/10 rounded-lg">
-                  <Plus className="w-5 h-5 text-teal-400" />
-                </div>
-                <h2 className="text-xl font-semibold text-white">
-                  Create {Label}
-                </h2>
-              </div>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div
+        className={`relative ${theme.bg.card} ${theme.border.primary} border rounded-lg shadow-xl w-full max-w-md transition-colors duration-300`}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleKeyPress}
+      >
+        <div className={`flex items-center justify-between p-4 border-b ${theme.border.primary} transition-colors duration-300`}>
+          <div className="flex items-center space-x-3">
+            <div className={`p-2 ${theme.bg.tertiary} rounded-lg transition-colors duration-300`}>
+              <Plus className={`w-4 h-4 ${theme.text.secondary} transition-colors duration-300`} />
             </div>
+            <h2 className={`text-lg font-medium ${theme.text.primary} transition-colors duration-300`}>
+              Create {Label}
+            </h2>
+          </div>
+        </div>
 
-            {/* Content */}
-            <div className="relative p-6 space-y-6">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-teal-100">
-                  {Label} Name
-                </label>
-                <motion.input
-                  type="text"
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                    if (e.target.value.trim()) setError("");
-                  }}
-                  className="w-full p-4 rounded-xl bg-slate-800/50 border border-teal-200/20 text-white placeholder-gray-400 focus:border-teal-400 focus:ring-0 focus:outline-none transition-all duration-200"
-                  placeholder={`Enter ${Label.toLowerCase()} name...`}
-                  variants={inputVariants}
-                  whileFocus="focus"
-                  disabled={isLoading}
-                />
+        <div className="p-4 space-y-4">
+          <div className="space-y-2">
+            <label className={`block text-sm font-medium ${theme.text.secondary} transition-colors duration-300`}>
+              {Label} Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (e.target.value.trim()) setError("");
+              }}
+              className={`w-full p-3 rounded-lg ${theme.input.base} transition-colors duration-300`}
+              placeholder={`Enter ${Label.toLowerCase()} name...`}
+              disabled={isLoading}
+            />
 
-                <AnimatePresence>
-                  {error && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="flex items-center space-x-2 text-rose-400 text-sm"
-                    >
-                      <AlertCircle className="w-4 h-4" />
-                      <span>{error}</span>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+            {error && (
+              <div className="flex items-center space-x-2 text-red-600 text-sm">
+                <AlertCircle className="w-4 h-4" />
+                <span>{error}</span>
               </div>
+            )}
+          </div>
 
-              {/* Action Buttons */}
-              <div className="flex space-x-3 pt-2">
-                <motion.button
-                  onClick={handleSubmit}
-                  disabled={isLoading || !name.trim()}
-                  className="flex-1 px-4 py-3 w-full bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white rounded-xl transition-all duration-200 font-medium shadow-lg shadow-teal-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
-                  variants={buttonVariants}
-                  whileHover="hover"
-                  whileTap="tap"
-                >
-                  {isLoading ? (
-                    <>
-                      <motion.div
-                        className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
-                        animate={{ rotate: 360 }}
-                        transition={{
-                          duration: 1,
-                          repeat: Infinity,
-                          ease: "linear",
-                        }}
-                      />
-                      <span>Creating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Plus className="w-4 h-4" />
-                      <span>Create {Label}</span>
-                    </>
-                  )}
-                </motion.button>
-              </div>
-            </div>
-
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-teal-400/10 to-transparent rounded-full blur-2xl" />
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-cyan-400/10 to-transparent rounded-full blur-xl" />
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          <div className="flex space-x-3 pt-2">
+            <button
+              onClick={handleSubmit}
+              disabled={isLoading || !name.trim()}
+              className={`flex-1 px-4 py-2 ${theme.button.primary} rounded-lg transition-colors duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2`}
+            >
+              {isLoading ? (
+                <>
+                  <div className={`w-4 h-4 border-2 ${theme.text.inverse.includes('text-white') ? 'border-white/30 border-t-white' : 'border-gray-900/30 border-t-gray-900'} rounded-full animate-spin`}></div>
+                  <span>Creating...</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4" />
+                  <span>Create {Label}</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -1,5 +1,9 @@
+"use client";
+
 import React, { useState, useEffect, useMemo } from "react";
 import { fetchIssues } from "../lib/github";
+import { useThemeClasses } from "../hooks/useThemeClasses";
+import Image from "next/image";
 
 interface GitHubIssue {
   id: number;
@@ -47,6 +51,7 @@ const IssuesDisplay: React.FC<IssuesDisplayProps> = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("");
+  const theme = useThemeClasses();
 
   useEffect(() => {
     const loadIssues = async () => {
@@ -78,15 +83,26 @@ const IssuesDisplay: React.FC<IssuesDisplayProps> = ({
   if (loading) {
     return (
       <div className="flex justify-center items-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <span className="ml-2">Loading issues...</span>
+        <div
+          className={`animate-spin rounded-full h-8 w-8 border-b-2 ${theme.text.primary.replace(
+            "text",
+            "border"
+          )} transition-colors duration-300`}
+        ></div>
+        <span
+          className={`ml-2 ${theme.text.secondary} transition-colors duration-300`}
+        >
+          Loading issues...
+        </span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-md p-4 text-red-700">
+      <div
+        className={`${theme.status.error} border rounded-md p-4 transition-colors duration-300`}
+      >
         Error: {error}
       </div>
     );
@@ -96,7 +112,9 @@ const IssuesDisplay: React.FC<IssuesDisplayProps> = ({
     <div className="space-y-4">
       {/* Header with filter */}
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-white">
+        <h2
+          className={`text-xl font-light ${theme.text.primary} transition-colors duration-300`}
+        >
           Issues ({filteredIssues.length})
         </h2>
         <input
@@ -104,13 +122,17 @@ const IssuesDisplay: React.FC<IssuesDisplayProps> = ({
           placeholder="Filter issues..."
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="px-3 py-2 border border-gray-300 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={`px-3 py-2 ${theme.input.base} rounded-md transition-colors duration-300`}
         />
       </div>
 
       {/* Issues list */}
       {filteredIssues.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">No issues found</div>
+        <div
+          className={`text-center py-8 ${theme.text.muted} transition-colors duration-300`}
+        >
+          No issues found
+        </div>
       ) : (
         <div className="space-y-3">
           {filteredIssues.map((issue) => (
@@ -124,8 +146,11 @@ const IssuesDisplay: React.FC<IssuesDisplayProps> = ({
 
 // Memoized issue card component to prevent unnecessary re-renders
 const IssueCard = React.memo<{ issue: GitHubIssue }>(({ issue }) => {
+  const theme = useThemeClasses();
   return (
-    <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 group-hover:border-teal-500/30 group-hover:bg-gray-800/70 transition-all duration-300">
+    <div
+      className={`backdrop-blur-sm ${theme.border.primary} ${theme.bg.card} border rounded-xl p-6 ${theme.bg.cardHover} ${theme.border.hover} transition-all duration-300`}
+    >
       <div className="flex items-start justify-between">
         <div className="flex-1 min-w-0">
           {/* Issue title and number */}
@@ -134,16 +159,22 @@ const IssueCard = React.memo<{ issue: GitHubIssue }>(({ issue }) => {
               href={issue.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-lg font-medium text-teal-400 hover:underline truncate"
+              className={`text-lg font-medium ${theme.text.primary} hover:underline truncate transition-colors duration-300`}
             >
               {issue.title}
             </a>
-            <span className="text-gray-500 text-sm">#{issue.number}</span>
+            <span
+              className={`${theme.text.muted} text-sm transition-colors duration-300`}
+            >
+              #{issue.number}
+            </span>
           </div>
 
           {/* Issue body preview */}
           {issue.body && (
-            <p className="text-gray-500 text-sm mb-3 line-clamp-2">
+            <p
+              className={`${theme.text.muted} text-sm mb-3 line-clamp-2 transition-colors duration-300`}
+            >
               {issue.body.substring(0, 150)}
               {issue.body.length > 150 && "..."}
             </p>
@@ -169,11 +200,15 @@ const IssueCard = React.memo<{ issue: GitHubIssue }>(({ issue }) => {
           )}
 
           {/* Issue metadata */}
-          <div className="flex items-center gap-4 text-sm text-gray-200">
+          <div
+            className={`flex items-center gap-4 text-sm ${theme.text.muted} transition-colors duration-300`}
+          >
             <div className="flex items-center gap-1">
-              <img
+              <Image
                 src={issue.user.avatar_url}
                 alt={issue.user.login}
+                width={40}
+                height={40}
                 className="w-4 h-4 rounded-full"
               />
               <span>{issue.user.login}</span>
@@ -187,13 +222,12 @@ const IssueCard = React.memo<{ issue: GitHubIssue }>(({ issue }) => {
           </div>
         </div>
 
-        {/* Issue state */}
         <div className="ml-4">
           <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${
+            className={`px-2 py-1 rounded-full text-xs font-medium transition-colors duration-300 ${
               issue.state === "open"
-                ? "bg-green-100 text-green-800"
-                : "bg-purple-100 text-purple-800"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
             }`}
           >
             {issue.state}

@@ -1,21 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import { Plus } from "lucide-react";
 import React, { Component } from "react";
-import { motion } from "framer-motion";
+import { useThemeClasses } from "../hooks/useThemeClasses";
 
-export class AddButton extends Component {
+// Wrapper function to use hooks with class component
+function AddButtonWithTheme(props: any) {
+  const theme = useThemeClasses();
+  return <AddButton theme={theme} {...props} />;
+}
+
+interface AddButtonProps {
+  theme?: ReturnType<typeof useThemeClasses>;
+}
+
+export class AddButton extends Component<AddButtonProps> {
   render() {
+    const { theme } = this.props;
+    if (!theme) return null;
+
     return (
-      <motion.button
-        whileHover={{ scale: 1.1, backgroundColor: "#81e6d9", color: "#000" }}
-        whileTap={{ scale: 0.95 }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className="cursor-pointer w-[45px] h-[45px] border border-teal-100 flex justify-center items-center rounded-md"
-        style={{ backgroundColor: "transparent", color: "inherit" }}
+      <button
+        className={`cursor-pointer w-[40px] h-[40px] border ${theme.border.primary} ${theme.border.hover} ${theme.bg.hover} flex justify-center items-center rounded-lg transition-colors duration-300 ${theme.bg.primary} ${theme.text.secondary} hover:${theme.text.primary}`}
       >
-        <Plus size={24} />
-      </motion.button>
+        <Plus size={18} />
+      </button>
     );
   }
 }
 
-export default AddButton;
+export default AddButtonWithTheme;

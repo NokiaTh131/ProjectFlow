@@ -3,9 +3,10 @@
 import "./home.css";
 import { useRouter } from "next/navigation";
 import { Suspense, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import CreateProject from "./create-project";
 import axios from "axios";
+import { useThemeClasses } from "./hooks/useThemeClasses";
+import ThemeToggle from "./components/ThemeToggle";
 
 export interface Project {
   id: number;
@@ -20,6 +21,7 @@ function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [showCreateProject, setShowCreateProject] = useState(false);
   const [loading, setLoading] = useState(false);
+  const themeClasses = useThemeClasses();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -83,60 +85,21 @@ function Home() {
     };
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 10,
-      },
-    },
-  };
-
-  const headerVariants = {
-    hidden: { y: -50, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 120,
-        damping: 20,
-      },
-    },
-  };
-
   return (
-    <div className="min-h-screen">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Header Section */}
-        <motion.div
-          variants={headerVariants}
-          initial="hidden"
-          animate="visible"
-          className="text-center mb-12"
-        >
-          <motion.div
-            className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-teal-400 to-blue-500 rounded-2xl mb-6 shadow-lg"
-            whileHover={{ rotate: 360, scale: 1.1 }}
-            transition={{ duration: 0.8 }}
+    <div
+      className={`min-h-screen ${themeClasses.bg.secondary} transition-colors duration-300`}
+    >
+      <div className="container mx-auto px-6 py-12 max-w-5xl">
+        {/* Theme Toggle */}
+        <div className="absolute top-6 right-6">
+          <ThemeToggle />
+        </div>
+        <div className="text-center mb-16">
+          <div
+            className={`inline-flex items-center justify-center w-14 h-14 ${themeClasses.button.primary} rounded-xl mb-6 transition-colors duration-300`}
           >
             <svg
-              className="w-10 h-10 text-white"
+              className={`w-7 h-7 text-white`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -148,306 +111,233 @@ function Home() {
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-          </motion.div>
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-white via-teal-100 to-blue-200 bg-clip-text text-transparent mb-4">
-            PROJECT FLOW
-          </h1>
-          <p className="text-gray-400 text-lg max-w-md mx-auto">
-            Organize, track, and manage your projects with modern elegance
-          </p>
-        </motion.div>
-
-        {/* Projects Grid */}
-        <AnimatePresence mode="wait">
-          {projects.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="text-center py-16"
-            >
-              <motion.div
-                className="w-24 h-24 bg-gray-800/50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-gray-700/50"
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <svg
-                  className="w-12 h-12 text-gray-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-              </motion.div>
-              <h3 className="text-2xl font-semibold text-white mb-3">
-                No projects yet
-              </h3>
-              <p className="text-gray-400 mb-6">
-                Create your first project to get started on your journey
-              </p>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleShowCreateProject}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-400 text-white px-6 py-3 rounded-xl font-medium shadow-lg transition-all duration-300"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                Create Project
-              </motion.button>
-            </motion.div>
-          ) : (
-            <motion.div
-              variants={containerVariants}
-              animate="visible"
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            >
-              {projects.map((project, index) => {
-                const deadlineStatus = project.deadLine
-                  ? project.finished === "finish"
-                    ? null
-                    : getDeadlineStatus(project.deadLine)
-                  : null;
-
-                return (
-                  <motion.div
-                    key={project.id}
-                    variants={itemVariants}
-                    whileHover={{
-                      y: -8,
-                      scale: 1.02,
-                      transition: {
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 20,
-                      },
-                    }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleClickProject(project.id)}
-                    className="group bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 hover:border-teal-500/30 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-teal-500/10 transition-all duration-300 cursor-pointer overflow-hidden"
-                  >
-                    {/* Card Header */}
-                    <div className="bg-gradient-to-r from-teal-500/10 to-blue-500/10 p-1">
-                      <div className="h-2 bg-gradient-to-r from-teal-400 to-blue-500 rounded-full opacity-60 group-hover:opacity-100 transition-opacity"></div>
-                    </div>
-
-                    {/* Card Content */}
-                    <div className="p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <h3 className="text-xl font-bold text-white group-hover:text-teal-100 transition-colors line-clamp-2 flex-1">
-                          {project.name}
-                        </h3>
-                        <motion.div
-                          className="w-8 h-8 bg-gray-700/50 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
-                          whileHover={{ scale: 1.1 }}
-                        >
-                          <svg
-                            className="w-4 h-4 text-teal-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
-                        </motion.div>
-                      </div>
-
-                      <div className="space-y-4">
-                        {/* Deadline Display */}
-                        <div className="flex items-center gap-2 text-sm text-gray-400">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                          <span>
-                            {project.deadLine
-                              ? new Date(project.deadLine).toLocaleDateString(
-                                  "en-US",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  }
-                                )
-                              : "No deadline"}
-                          </span>
-                        </div>
-
-                        {/* Deadline Status Badge */}
-                        {deadlineStatus && (
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: index * 0.1 }}
-                            className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium backdrop-blur-sm border ${
-                              deadlineStatus.color.includes("emerald")
-                                ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"
-                                : deadlineStatus.color.includes("amber")
-                                ? "bg-amber-500/20 text-amber-300 border-amber-500/30"
-                                : "bg-red-500/20 text-red-300 border-red-500/30"
-                            }`}
-                          >
-                            <motion.div
-                              className={`w-2 h-2 rounded-full mr-2 ${
-                                deadlineStatus.color.includes("emerald")
-                                  ? "bg-emerald-400"
-                                  : deadlineStatus.color.includes("amber")
-                                  ? "bg-amber-400"
-                                  : "bg-red-400"
-                              }`}
-                              animate={{
-                                scale: deadlineStatus.color.includes("red")
-                                  ? [1, 1.2, 1]
-                                  : 1,
-                              }}
-                              transition={{
-                                duration: 1,
-                                repeat: deadlineStatus.color.includes("red")
-                                  ? Infinity
-                                  : 0,
-                              }}
-                            />
-                            {deadlineStatus.text}
-                          </motion.div>
-                        )}
-                      </div>
-
-                      {/* Project Stats */}
-                      <div className="mt-4 pt-4 border-t border-gray-700/50">
-                        <div className="flex items-center justify-between text-xs text-gray-500">
-                          <span>Project #{project.id}</span>
-                          <span className="flex items-center gap-1">
-                            <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                            {project.finished === "finish" ? (
-                              <div className="text-teal-400">Done</div>
-                            ) : (
-                              "Active"
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Floating Action Button */}
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{
-            type: "spring",
-            stiffness: 200,
-            damping: 20,
-            delay: 0.5,
-          }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={handleShowCreateProject}
-          className="fixed right-6 bottom-6 z-10"
-        >
-          <div className="bg-gradient-to-r from-teal-500 to-blue-500 hover:from-teal-400 hover:to-blue-400 text-white p-4 rounded-full shadow-lg hover:shadow-xl hover:shadow-teal-500/25 transition-all duration-300 cursor-pointer">
-            <motion.svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              whileHover={{ rotate: 90 }}
-              transition={{ duration: 0.3 }}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4v16m8-8H4"
-              />
-            </motion.svg>
           </div>
-        </motion.div>
+          <h1
+            className={`text-3xl md:text-4xl font-light ${themeClasses.text.primary} mb-3 transition-colors duration-300`}
+          >
+            Project Flow
+          </h1>
+          <p
+            className={`${themeClasses.text.secondary} max-w-md mx-auto transition-colors duration-300`}
+          >
+            Simple project management
+          </p>
+        </div>
 
-        {/* Create Project Modal */}
-        <AnimatePresence>
-          {showCreateProject && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
+        {projects.length === 0 ? (
+          <div className="text-center py-20">
+            <div
+              className={`w-16 h-16 ${themeClasses.bg.tertiary} rounded-xl flex items-center justify-center mx-auto mb-6 transition-colors duration-300`}
             >
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.8, opacity: 0, y: 20 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              <svg
+                className={`w-8 h-8 ${themeClasses.text.muted}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <CreateProject exitClicked={setShowCreateProject} />
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Loading Overlay */}
-        <AnimatePresence>
-          {loading && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm flex items-center justify-center z-50"
-            >
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                className="bg-gray-800/90 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-8 text-center"
-              >
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  className="w-12 h-12 border-3 border-teal-500/20 border-t-teal-400 rounded-full mx-auto mb-4"
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                 />
-                <p className="text-white font-medium">
-                  Loading your project...
-                </p>
-                <p className="text-gray-400 text-sm mt-1">Please wait</p>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </svg>
+            </div>
+            <h3
+              className={`text-lg font-medium ${themeClasses.text.primary} mb-2 transition-colors duration-300`}
+            >
+              No projects yet
+            </h3>
+            <p
+              className={`${themeClasses.text.secondary} mb-8 transition-colors duration-300`}
+            >
+              Create your first project to get started
+            </p>
+            <button
+              onClick={handleShowCreateProject}
+              className={`inline-flex items-center gap-2 ${themeClasses.button.primary} px-5 py-2.5 rounded-lg font-medium transition-all duration-200`}
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Create Project
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {projects.map((project) => {
+              const deadlineStatus = project.deadLine
+                ? project.finished === "finish"
+                  ? null
+                  : getDeadlineStatus(project.deadLine)
+                : null;
+
+              return (
+                <div
+                  key={project.id}
+                  onClick={() => handleClickProject(project.id)}
+                  className={`group ${themeClasses.bg.card} ${themeClasses.border.primary} ${themeClasses.border.hover} ${themeClasses.shadow.md} hover:shadow-lg rounded-lg transition-all duration-200 cursor-pointer p-5`}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <h3
+                      className={`text-lg font-medium ${themeClasses.text.primary} flex-1 transition-colors duration-300`}
+                    >
+                      {project.name}
+                    </h3>
+                    <div className="w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <svg
+                        className={`w-4 h-4 ${themeClasses.text.muted}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div
+                      className={`flex items-center gap-2 text-sm ${themeClasses.text.secondary} transition-colors duration-300`}
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      <span>
+                        {project.deadLine
+                          ? new Date(project.deadLine).toLocaleDateString(
+                              "en-US",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )
+                          : "No deadline"}
+                      </span>
+                    </div>
+
+                    {deadlineStatus && (
+                      <div
+                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                          deadlineStatus.color.includes("emerald")
+                            ? "bg-green-100 text-green-700"
+                            : deadlineStatus.color.includes("amber")
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        <div
+                          className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
+                            deadlineStatus.color.includes("emerald")
+                              ? "bg-green-500"
+                              : deadlineStatus.color.includes("amber")
+                              ? "bg-yellow-500"
+                              : "bg-red-500"
+                          }`}
+                        />
+                        {deadlineStatus.text}
+                      </div>
+                    )}
+                  </div>
+
+                  <div
+                    className={`mt-4 pt-4 ${themeClasses.border.primary} border-t transition-colors duration-300`}
+                  >
+                    <div
+                      className={`flex items-center justify-between text-xs ${themeClasses.text.muted} transition-colors duration-300`}
+                    >
+                      <span>#{project.id}</span>
+                      <span className="flex items-center gap-1">
+                        <div
+                          className={`w-1.5 h-1.5 ${themeClasses.text.muted} rounded-full`}
+                        ></div>
+                        {project.finished === "finish" ? (
+                          <span className="text-green-600">Done</span>
+                        ) : (
+                          "Active"
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <button
+          onClick={handleShowCreateProject}
+          className={`fixed right-6 bottom-6 z-10 ${themeClasses.button.primary} p-3 rounded-full ${themeClasses.shadow.lg} transition-all duration-200`}
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+        </button>
+
+        {showCreateProject && (
+          <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
+            <CreateProject exitClicked={setShowCreateProject} />
+          </div>
+        )}
+
+        {loading && (
+          <div
+            className={`fixed inset-0 ${themeClasses.bg.secondary}/80 backdrop-blur-sm flex items-center justify-center z-50 transition-colors duration-300`}
+          >
+            <div
+              className={`${themeClasses.bg.card} ${themeClasses.border.primary} rounded-xl p-6 text-center ${themeClasses.shadow.lg} transition-colors duration-300`}
+            >
+              <div
+                className={`w-6 h-6 border-2 ${themeClasses.border.primary} ${
+                  themeClasses.button.primary.includes("bg-white")
+                    ? "border-t-gray-900"
+                    : "border-t-white"
+                } rounded-full mx-auto mb-3 animate-spin`}
+              ></div>
+              <p
+                className={`${themeClasses.text.primary} font-medium transition-colors duration-300`}
+              >
+                Loading...
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

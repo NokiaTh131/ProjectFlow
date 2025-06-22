@@ -1,8 +1,11 @@
+"use client";
+
 import Highlight from "@tiptap/extension-highlight";
 import Underline from "@tiptap/extension-underline";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { RichTextEditor } from "@mantine/tiptap";
+import { useThemeClasses } from "../hooks/useThemeClasses";
 
 interface TextEditorProps {
   content: string;
@@ -10,14 +13,14 @@ interface TextEditorProps {
 }
 
 export default function Text_editor({ content, onChange }: TextEditorProps) {
+  const theme = useThemeClasses();
   const editor = useEditor({
     extensions: [StarterKit, Underline, Highlight],
     content,
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class:
-          "p-6 min-h-[200px] prose prose-invert max-w-none focus:outline-none text-slate-200 leading-relaxed",
+        class: `p-4 min-h-[200px] prose max-w-none focus:outline-none ${theme.text.secondary} leading-relaxed transition-colors duration-300`,
       },
     },
     onUpdate: ({ editor }) => {
@@ -31,27 +34,32 @@ export default function Text_editor({ content, onChange }: TextEditorProps) {
 
   return (
     <div className="relative">
-      {/* Gradient border effect */}
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-teal-500/20 rounded-xl opacity-75"></div>
-
-      <div className="relative bg-slate-900/80 backdrop-blur-sm border border-slate-600/30 rounded-xl overflow-hidden shadow-2xl">
+      <div
+        className={`relative ${theme.bg.card} ${theme.border.primary} border rounded-lg overflow-hidden transition-colors duration-300`}
+      >
         <RichTextEditor
           editor={editor}
           variant="unstyled"
           className="bg-transparent"
         >
           {/* Custom Toolbar */}
-          <div className="bg-slate-800/60 backdrop-blur-sm border-b border-slate-600/30 p-3">
+          <div
+            className={`${theme.bg.secondary} ${theme.border.primary} border-b p-3 transition-colors duration-300`}
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-1">
                 {/* Text Formatting Group */}
-                <div className="flex items-center bg-slate-700/50 rounded-lg p-1 space-x-1">
+                <div
+                  className={`flex items-center ${theme.bg.card} ${theme.border.primary} border rounded-lg p-1 space-x-1 transition-colors duration-300`}
+                >
                   <button
                     onClick={() => editor?.chain().focus().toggleBold().run()}
-                    className={`p-2 rounded-md transition-all duration-200 hover:bg-slate-600/50 ${
+                    className={`p-2 rounded-md transition-all duration-300 ${
+                      theme.bg.hover
+                    } ${
                       editor?.isActive("bold")
-                        ? "bg-indigo-500/80 text-white shadow-lg"
-                        : "text-slate-300 hover:text-white"
+                        ? `${theme.button.primary}`
+                        : `${theme.text.secondary} hover:${theme.text.primary}`
                     }`}
                     title="Bold"
                   >
@@ -66,10 +74,12 @@ export default function Text_editor({ content, onChange }: TextEditorProps) {
 
                   <button
                     onClick={() => editor?.chain().focus().toggleItalic().run()}
-                    className={`p-2 rounded-md transition-all duration-200 hover:bg-slate-600/50 ${
+                    className={`p-2 rounded-md transition-all duration-300 ${
+                      theme.bg.hover
+                    } ${
                       editor?.isActive("italic")
-                        ? "bg-indigo-500/80 text-white shadow-lg"
-                        : "text-slate-300 hover:text-white"
+                        ? `${theme.button.primary}`
+                        : `${theme.text.secondary} hover:${theme.text.primary}`
                     }`}
                     title="Italic"
                   >
@@ -86,10 +96,12 @@ export default function Text_editor({ content, onChange }: TextEditorProps) {
                     onClick={() =>
                       editor?.chain().focus().toggleUnderline().run()
                     }
-                    className={`p-2 rounded-md transition-all duration-200 hover:bg-slate-600/50 ${
+                    className={`p-2 rounded-md transition-all duration-300 ${
+                      theme.bg.hover
+                    } ${
                       editor?.isActive("underline")
-                        ? "bg-indigo-500/80 text-white shadow-lg"
-                        : "text-slate-300 hover:text-white"
+                        ? `${theme.button.primary}`
+                        : `${theme.text.secondary} hover:${theme.text.primary}`
                     }`}
                     title="Underline"
                   >
@@ -104,10 +116,12 @@ export default function Text_editor({ content, onChange }: TextEditorProps) {
 
                   <button
                     onClick={() => editor?.chain().focus().toggleStrike().run()}
-                    className={`p-2 rounded-md transition-all duration-200 hover:bg-slate-600/50 ${
+                    className={`p-2 rounded-md transition-all duration-300 ${
+                      theme.bg.hover
+                    } ${
                       editor?.isActive("strike")
-                        ? "bg-indigo-500/80 text-white shadow-lg"
-                        : "text-slate-300 hover:text-white"
+                        ? `${theme.button.primary}`
+                        : `${theme.text.secondary} hover:${theme.text.primary}`
                     }`}
                     title="Strikethrough"
                   >
@@ -122,15 +136,19 @@ export default function Text_editor({ content, onChange }: TextEditorProps) {
                 </div>
 
                 {/* Styling Group */}
-                <div className="flex items-center bg-slate-700/50 rounded-lg p-1 space-x-1 ml-2">
+                <div
+                  className={`flex items-center ${theme.bg.card} ${theme.border.primary} border rounded-lg p-1 space-x-1 ml-2 transition-colors duration-300`}
+                >
                   <button
                     onClick={() =>
                       editor?.chain().focus().toggleHighlight().run()
                     }
-                    className={`p-2 rounded-md transition-all duration-200 hover:bg-slate-600/50 ${
+                    className={`p-2 rounded-md transition-all duration-300 ${
+                      theme.bg.hover
+                    } ${
                       editor?.isActive("highlight")
-                        ? "bg-yellow-500/80 text-black shadow-lg"
-                        : "text-slate-300 hover:text-white"
+                        ? "bg-yellow-200 text-yellow-800"
+                        : `${theme.text.secondary} hover:${theme.text.primary}`
                     }`}
                     title="Highlight"
                   >
@@ -145,10 +163,12 @@ export default function Text_editor({ content, onChange }: TextEditorProps) {
 
                   <button
                     onClick={() => editor?.chain().focus().toggleCode().run()}
-                    className={`p-2 rounded-md transition-all duration-200 hover:bg-slate-600/50 ${
+                    className={`p-2 rounded-md transition-all duration-300 ${
+                      theme.bg.hover
+                    } ${
                       editor?.isActive("code")
-                        ? "bg-emerald-500/80 text-white shadow-lg"
-                        : "text-slate-300 hover:text-white"
+                        ? `${theme.button.primary}`
+                        : `${theme.text.secondary} hover:${theme.text.primary}`
                     }`}
                     title="Inline Code"
                   >
@@ -165,7 +185,7 @@ export default function Text_editor({ content, onChange }: TextEditorProps) {
                 {/* Clear Formatting */}
                 <button
                   onClick={() => editor?.chain().focus().unsetAllMarks().run()}
-                  className="p-2 rounded-md transition-all duration-200 hover:bg-slate-600/50 text-slate-300 hover:text-white ml-2"
+                  className={`p-2 rounded-md transition-all duration-300 ${theme.bg.hover} ${theme.text.secondary} hover:${theme.text.primary} ml-2`}
                   title="Clear Formatting"
                 >
                   <svg
@@ -179,9 +199,11 @@ export default function Text_editor({ content, onChange }: TextEditorProps) {
               </div>
 
               {/* Word Count Indicator */}
-              <div className="flex items-center space-x-3 text-xs text-slate-400">
+              <div
+                className={`flex items-center space-x-3 text-xs ${theme.text.muted} transition-colors duration-300`}
+              >
                 <div className="flex items-center space-x-1">
-                  <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <span>Live</span>
                 </div>
                 <span>
@@ -195,24 +217,25 @@ export default function Text_editor({ content, onChange }: TextEditorProps) {
           <div className="relative">
             {/* Placeholder */}
             {editor?.isEmpty && (
-              <div className="absolute top-6 left-6 text-slate-500 pointer-events-none select-none">
+              <div
+                className={`absolute top-4 left-4 ${theme.text.muted} pointer-events-none select-none transition-colors duration-300`}
+              >
                 Start writing your content...
               </div>
             )}
 
             <RichTextEditor.Content className="min-h-[200px] max-h-[400px] overflow-y-auto" />
-
-            {/* Subtle gradient overlay at bottom for scroll indication */}
-            <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-slate-900/40 to-transparent pointer-events-none"></div>
           </div>
 
           {/* Footer */}
-          <div className="bg-slate-800/40 backdrop-blur-sm border-t border-slate-600/30 px-4 py-2 flex justify-between items-center text-xs text-slate-400">
+          <div
+            className={`${theme.bg.secondary} ${theme.border.primary} border-t px-4 py-2 flex justify-between items-center text-xs ${theme.text.muted} transition-colors duration-300`}
+          >
             <div className="flex items-center space-x-4">
               <span>Rich Text Editor</span>
               {editor?.isEditable && (
                 <div className="flex items-center space-x-1">
-                  <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                  <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
                   <span>Editable</span>
                 </div>
               )}

@@ -9,7 +9,6 @@ import ConfirmDeleteModal from "@/app/components/remove-modal";
 import CreateFeatureModal from "@/app/components/create-feature";
 import _ from "lodash";
 import { MarkGithubIcon } from "@primer/octicons-react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Folder,
   Plus,
@@ -21,6 +20,8 @@ import {
   ExternalLink,
   BarChart3,
 } from "lucide-react";
+import { useThemeClasses } from "../../hooks/useThemeClasses";
+import ThemeToggle from "../../components/ThemeToggle";
 
 interface Project {
   id: number;
@@ -59,6 +60,7 @@ function Project() {
   const projectId = params.id as string;
   const [gitDetails, setGitDetails] = useState<GitDetails>();
   const [reload, setReload] = useState(false);
+  const themeClasses = useThemeClasses();
 
   const debouncedFetchProject = useMemo(
     () =>
@@ -173,467 +175,410 @@ function Project() {
   };
 
   return (
-    <div>
-      {/* Header Section */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
-        className="relative z-10 p-6 flex justify-center items-center"
+    <div
+      className={`min-h-screen ${themeClasses.bg.primary} transition-colors duration-300`}
+    >
+      <div
+        className={`${themeClasses.bg.secondary} ${themeClasses.border.primary} border-b transition-colors duration-300`}
       >
-        <div className="max-w-7xl mx-auto mt-8">
-          <motion.div
-            className="flex items-center gap-4 mb-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Folder className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <motion.h1
-                className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 }}
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <div
+                className={`cursor-pointer w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center transition-colors duration-300`}
+                onClick={() => router.push("/")}
               >
-                {project?.name}
-              </motion.h1>
-              <div className="flex items-center gap-2 mt-2">
-                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-slate-400 text-sm">Active Project</span>
+                <Folder className={`w-5 h-5 text-white`} />
+              </div>
+              <div>
+                <h1
+                  className={`text-2xl md:text-3xl font-semibold ${themeClasses.text.primary} transition-colors duration-300`}
+                >
+                  {project?.name}
+                </h1>
+                <div className="flex items-center gap-2 mt-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span
+                    className={`${themeClasses.text.secondary} text-sm transition-colors duration-300`}
+                  >
+                    Active Project
+                  </span>
+                </div>
               </div>
             </div>
-          </motion.div>
+            <ThemeToggle />
+          </div>
 
-          <motion.div
-            whileHover={{ scale: 1.02, y: -2 }}
-            className="inline-flex items-center gap-3 bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl py-3 px-4 shadow-lg"
+          <div
+            className={`inline-flex items-center gap-3 ${themeClasses.bg.tertiary} ${themeClasses.border.primary} border rounded-lg py-2 px-3 transition-colors duration-300`}
           >
-            <MarkGithubIcon className="w-5 h-5 text-slate-400" />
+            <MarkGithubIcon
+              className={`w-4 h-4 ${themeClasses.text.secondary}`}
+            />
             <a
               href={project?.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-300 hover:text-white transition-colors flex items-center gap-2 text-sm"
+              className={`${themeClasses.text.secondary} hover:${themeClasses.text.primary} transition-colors flex items-center gap-2 text-sm`}
             >
               {project?.githubUrl?.replace("https://github.com/", "")}
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="w-3 h-3" />
             </a>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 w-screen flex items-center justify-center">
-        <div className="w-full max-w-[1400px] flex flex-col justify-center p-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-            className="grid grid-cols-1 lg:grid-cols-3 gap-6"
-          >
-            {/* Left Panel - Features/Tasks */}
-            <div className="col-span-3">
-              <motion.div
-                className="bg-slate-800/30 backdrop-blur-xl border border-slate-700/50 rounded-3xl overflow-hidden shadow-2xl"
-                whileHover={{ borderColor: "rgba(20, 184, 166, 0.4)" }}
-                transition={{ duration: 0.3 }}
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="col-span-3">
+            <div
+              className={`${themeClasses.bg.secondary} ${themeClasses.border.primary} border rounded-lg overflow-hidden ${themeClasses.shadow.sm} transition-colors duration-300`}
+            >
+              <div
+                className={`p-6 ${themeClasses.bg.tertiary} ${themeClasses.border.primary} border-b transition-colors duration-300`}
               >
-                {/* Panel Header with Glass Effect */}
-                <div className="p-6 bg-gradient-to-r from-slate-800/40 to-slate-700/40 backdrop-blur-sm border-b border-slate-600/30">
-                  <div className="flex items-center justify-between">
-                    <motion.div
-                      className="flex items-center gap-4"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                    >
-                      <div className="relative">
-                        <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-                          {mode === "features" ? (
-                            <Folder className="w-6 h-6 text-white" />
-                          ) : (
-                            <BarChart3 className="w-6 h-6 text-white" />
-                          )}
-                        </div>
-                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-slate-800 animate-pulse"></div>
-                      </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-white">
-                          {mode === "features"
-                            ? "Features"
-                            : project?.features.find(
-                                (feature) => feature.id === activeFeatureId
-                              )?.name ?? ""}
-                        </h2>
-                        <p className="text-slate-400 text-sm">
-                          {mode === "features"
-                            ? `${project?.features.length || 0} features total`
-                            : `${
-                                project?.features.find(
-                                  (f) => f.id === activeFeatureId
-                                )?.tasks.length || 0
-                              } tasks`}
-                        </p>
-                      </div>
-                    </motion.div>
-
-                    <div className="flex justify-center items-center gap-3">
-                      <AnimatePresence>
-                        {mode === "tasks" && (
-                          <motion.button
-                            initial={{ opacity: 0, scale: 0.8, rotate: -90 }}
-                            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                            exit={{ opacity: 0, scale: 0.8, rotate: 90 }}
-                            whileHover={{ scale: 1.05, y: -2 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setMode("features")}
-                            className="w-11 h-11 bg-gradient-to-br from-violet-500 to-purple-600 hover:from-violet-400 hover:to-purple-500 rounded-xl flex items-center justify-center transition-all duration-300 shadow-lg"
-                          >
-                            <ArrowLeft className="w-5 h-5 text-white" />
-                          </motion.button>
-                        )}
-                      </AnimatePresence>
-
-                      <motion.button
-                        whileHover={{ scale: 1.05, y: -2, rotate: 90 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setShowCreateModal(true)}
-                        className="w-11 h-11 cursor-pointer bg-gradient-to-br from-blue-500 to-cyan-600 hover:from-blue-400 hover:to-cyan-500 rounded-xl flex items-center justify-center shadow-lg transition-all duration-300"
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div
+                        className={`w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center transition-colors duration-300`}
                       >
-                        <Plus className="w-5 h-5 text-white" />
-                      </motion.button>
+                        {mode === "features" ? (
+                          <Folder className={`w-5 h-5 text-white`} />
+                        ) : (
+                          <BarChart3 className={`w-5 h-5 text-white`} />
+                        )}
+                      </div>
+                      <div
+                        className={`absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 ${themeClasses.bg.secondary}`}
+                      ></div>
+                    </div>
+                    <div>
+                      <h2
+                        className={`text-xl font-semibold ${themeClasses.text.primary} transition-colors duration-300`}
+                      >
+                        {mode === "features"
+                          ? "Features"
+                          : project?.features.find(
+                              (feature) => feature.id === activeFeatureId
+                            )?.name ?? ""}
+                      </h2>
+                      <p
+                        className={`${themeClasses.text.secondary} text-sm transition-colors duration-300`}
+                      >
+                        {mode === "features"
+                          ? `${project?.features.length || 0} features total`
+                          : `${
+                              project?.features.find(
+                                (f) => f.id === activeFeatureId
+                              )?.tasks.length || 0
+                            } tasks`}
+                      </p>
                     </div>
                   </div>
+
+                  <div className="flex items-center gap-3">
+                    {mode === "tasks" && (
+                      <button
+                        onClick={() => setMode("features")}
+                        className={`w-9 h-9 ${themeClasses.button.secondary} rounded-lg flex items-center justify-center transition-all duration-200`}
+                      >
+                        <ArrowLeft
+                          className={`w-4 h-4 ${themeClasses.text.secondary}`}
+                        />
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => setShowCreateModal(true)}
+                      className={`w-9 h-9 bg-gray-900 rounded-lg flex items-center justify-center transition-all duration-200`}
+                    >
+                      <Plus className="w-4 h-4 text-white" />
+                    </button>
+                  </div>
                 </div>
+              </div>
 
-                {/* Content List */}
-                <div className="p-6">
-                  <div className="space-y-4">
-                    <AnimatePresence>
-                      {mode === "features"
-                        ? project?.features.map((feature, index) => (
-                            <motion.div
-                              key={feature.id}
-                              initial={{ opacity: 0, x: -20, scale: 0.95 }}
-                              animate={{ opacity: 1, x: 0, scale: 1 }}
-                              exit={{ opacity: 0, x: -20, scale: 0.95 }}
-                              transition={{ delay: index * 0.1 }}
-                              whileHover={{ scale: 1.02, y: -2 }}
-                              className="group relative bg-slate-700/30 backdrop-blur-sm border border-slate-600/40 hover:border-green-500/50 rounded-2xl p-5 transition-all duration-300 shadow-lg hover:shadow-xl"
+              <div className="p-6">
+                <div className="space-y-4">
+                  {mode === "features"
+                    ? project?.features.map((feature) => (
+                        <div
+                          key={feature.id}
+                          className={`group ${themeClasses.bg.tertiary} ${themeClasses.border.primary} hover:${themeClasses.border.secondary} border rounded-lg p-4 transition-all duration-200`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div
+                              className="flex items-center gap-3 cursor-pointer flex-1"
+                              onClick={() => {
+                                setMode("tasks");
+                                setActiveFeatureId(feature.id);
+                              }}
                             >
-                              {/* Hover Glow Effect */}
-                              <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 to-teal-500/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                              <div className="relative flex items-center justify-between">
-                                <div
-                                  className="flex items-center gap-4 cursor-pointer flex-1"
-                                  onClick={() => {
-                                    setMode("tasks");
-                                    setActiveFeatureId(feature.id);
-                                  }}
-                                >
-                                  <div className="relative">
-                                    {feature.tasks.filter(
-                                      (task) => task.status === "done"
-                                    ).length === feature.tasks.length &&
-                                    feature.tasks.length > 0 ? (
-                                      <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
-                                        <CheckCircle2 className="w-5 h-5 text-white" />
-                                      </div>
-                                    ) : (
-                                      <div className="w-10 h-10 bg-slate-600/50 group-hover:bg-gradient-to-br group-hover:from-teal-400 group-hover:to-cyan-500 rounded-xl flex items-center justify-center transition-all duration-300">
-                                        <Folder className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
-                                      </div>
-                                    )}
+                              <div>
+                                {feature.tasks.filter(
+                                  (task) => task.status === "done"
+                                ).length === feature.tasks.length &&
+                                feature.tasks.length > 0 ? (
+                                  <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                                    <CheckCircle2 className="w-4 h-4 text-white" />
                                   </div>
-                                  <div className="flex-1">
-                                    <h3 className="text-white font-semibold text-lg group-hover:text-green-400 transition-colors">
-                                      {feature.name}
-                                    </h3>
-                                    <div className="flex items-center gap-3 mt-1">
-                                      <p className="text-slate-400 text-sm">
-                                        {feature.tasks.length} tasks
-                                      </p>
-                                      <div className="flex items-center gap-1">
-                                        <div className="w-16 h-2 bg-slate-600 rounded-full overflow-hidden">
-                                          <div
-                                            className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500"
-                                            style={{
-                                              width: `${
-                                                feature.tasks.length > 0
-                                                  ? (feature.tasks.filter(
-                                                      (t) => t.status === "done"
-                                                    ).length /
-                                                      feature.tasks.length) *
-                                                    100
-                                                  : 0
-                                              }%`,
-                                            }}
-                                          />
-                                        </div>
-                                        <span className="text-xs text-slate-400">
-                                          {feature.tasks.length > 0
-                                            ? Math.round(
-                                                (feature.tasks.filter(
+                                ) : (
+                                  <div
+                                    className={`w-8 h-8 ${themeClasses.button.secondary} rounded-lg flex items-center justify-center transition-colors duration-200`}
+                                  >
+                                    <Folder
+                                      className={`w-4 h-4 ${themeClasses.text.secondary}`}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex-1">
+                                <h3
+                                  className={`${themeClasses.text.primary} font-medium transition-colors duration-300`}
+                                >
+                                  {feature.name}
+                                </h3>
+                                <div className="flex items-center gap-3 mt-1">
+                                  <p
+                                    className={`${themeClasses.text.secondary} text-sm transition-colors duration-300`}
+                                  >
+                                    {feature.tasks.length} tasks
+                                  </p>
+                                  <div className="flex items-center gap-2">
+                                    <div
+                                      className={`w-12 h-2 ${
+                                        themeClasses.bg.primary === "bg-white"
+                                          ? "bg-gray-200"
+                                          : "bg-gray-600"
+                                      } rounded-full overflow-hidden transition-colors duration-300`}
+                                    >
+                                      <div
+                                        className="h-full bg-green-500 transition-all duration-500"
+                                        style={{
+                                          width: `${
+                                            feature.tasks.length > 0
+                                              ? (feature.tasks.filter(
                                                   (t) => t.status === "done"
                                                 ).length /
                                                   feature.tasks.length) *
-                                                  100
-                                              )
-                                            : 0}
-                                          %
-                                        </span>
-                                      </div>
+                                                100
+                                              : 0
+                                          }%`,
+                                        }}
+                                      />
                                     </div>
-                                  </div>
-                                </div>
-
-                                <motion.button
-                                  whileHover={{ scale: 1.1, rotate: 90 }}
-                                  whileTap={{ scale: 0.9 }}
-                                  onClick={() =>
-                                    handleDeleteFeatures(feature.id)
-                                  }
-                                  className="w-9 h-9 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 hover:border-red-500/50 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
-                                >
-                                  <Trash2 className="w-4 h-4 text-red-400" />
-                                </motion.button>
-                              </div>
-                            </motion.div>
-                          ))
-                        : project?.features
-                            .find((f) => f.id === activeFeatureId)
-                            ?.tasks.sort((a, b) => a.id - b.id)
-                            .map((task, index) => (
-                              <motion.div
-                                key={task.id}
-                                initial={{ opacity: 0, x: -20, scale: 0.95 }}
-                                animate={{ opacity: 1, x: 0, scale: 1 }}
-                                transition={{ delay: index * 0.1 }}
-                                whileHover={{ scale: 1.02, y: -2 }}
-                                className="group relative bg-slate-700/30 backdrop-blur-sm border border-slate-600/40 hover:border-blue-500/50 rounded-2xl p-5 transition-all duration-300 shadow-lg hover:shadow-xl"
-                              >
-                                {/* Status-based Glow Effect */}
-                                <div
-                                  className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-                                    task.status === "done"
-                                      ? "bg-gradient-to-r from-green-500/10 to-emerald-500/10"
-                                      : task.status === "in-progress"
-                                      ? "bg-gradient-to-r from-yellow-500/10 to-orange-500/10"
-                                      : "bg-gradient-to-r from-blue-500/10 to-cyan-500/10"
-                                  }`}
-                                ></div>
-
-                                <div className="relative flex items-center justify-between">
-                                  <div className="flex items-center gap-4 flex-1">
-                                    <motion.button
-                                      whileHover={{ scale: 1.1 }}
-                                      whileTap={{ scale: 0.9 }}
-                                      onClick={() =>
-                                        handleToggleTaskStatus(task)
-                                      }
-                                      className="w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-300"
+                                    <span
+                                      className={`text-xs ${themeClasses.text.secondary} transition-colors duration-300`}
                                     >
-                                      {task.status === "done" ? (
-                                        <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-                                          <CheckCircle2 className="w-5 h-5 text-white" />
-                                        </div>
-                                      ) : task.status === "in-progress" ? (
-                                        <motion.div
-                                          animate={{ rotate: 360 }}
-                                          transition={{
-                                            duration: 2,
-                                            repeat: Infinity,
-                                            ease: "linear",
-                                          }}
-                                          className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg"
-                                        >
-                                          <Clock className="w-5 h-5 text-white" />
-                                        </motion.div>
-                                      ) : (
-                                        <div className="w-10 h-10 bg-slate-600/50 hover:bg-gradient-to-br hover:from-blue-400 hover:to-cyan-500 rounded-xl flex items-center justify-center transition-all duration-300">
-                                          <Circle className="w-5 h-5 text-slate-400 hover:text-white transition-colors" />
-                                        </div>
-                                      )}
-                                    </motion.button>
-
-                                    <div className="flex-1">
-                                      <h3
-                                        className="text-white font-semibold cursor-pointer hover:text-blue-400 transition-colors"
-                                        onClick={() =>
-                                          router.push(
-                                            `${projectId}/task/${task.id}`
+                                      {feature.tasks.length > 0
+                                        ? Math.round(
+                                            (feature.tasks.filter(
+                                              (t) => t.status === "done"
+                                            ).length /
+                                              feature.tasks.length) *
+                                              100
                                           )
-                                        }
-                                      >
-                                        {task.name}
-                                      </h3>
-                                      <div className="flex items-center gap-2 mt-2">
-                                        <span
-                                          className={`text-xs px-3 py-1 rounded-full font-medium backdrop-blur-sm ${
-                                            task.status === "done"
-                                              ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                                              : task.status === "in-progress"
-                                              ? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
-                                              : "bg-slate-500/20 text-slate-400 border border-slate-500/30"
-                                          }`}
-                                        >
-                                          {task.status.replace("-", " ")}
-                                        </span>
-                                      </div>
-                                    </div>
+                                        : 0}
+                                      %
+                                    </span>
                                   </div>
-
-                                  <motion.button
-                                    whileHover={{ scale: 1.1, rotate: 90 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    onClick={() => handleDeleteTasks(task.id)}
-                                    className="w-9 h-9 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 hover:border-red-500/50 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg"
-                                  >
-                                    <Trash2 className="w-4 h-4 text-red-400" />
-                                  </motion.button>
                                 </div>
-                              </motion.div>
-                            ))}
-                    </AnimatePresence>
-                  </div>
+                              </div>
+                            </div>
 
-                  {/* Git Graph Section */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                    className="mt-8"
-                  >
-                    {gitDetails && gitDetails.owner && gitDetails.repo && (
-                      <div className="bg-slate-800/20 backdrop-blur-sm border border-slate-600/30 rounded-2xl p-6">
-                        <GitGraph
-                          owner={gitDetails.owner}
-                          repo={gitDetails.repo}
-                        />
-                      </div>
-                    )}
-                  </motion.div>
-                </div>
-              </motion.div>
-            </div>
+                            <button
+                              onClick={() => handleDeleteFeatures(feature.id)}
+                              className="w-8 h-8 bg-red-50 hover:bg-red-100 border border-red-200 hover:border-red-300 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200"
+                            >
+                              <Trash2 className="w-4 h-4 text-red-600" />
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    : project?.features
+                        .find((f) => f.id === activeFeatureId)
+                        ?.tasks.sort((a, b) => a.id - b.id)
+                        .map((task) => (
+                          <div
+                            key={task.id}
+                            className={`group ${themeClasses.bg.tertiary} ${themeClasses.border.primary} hover:${themeClasses.border.secondary} border rounded-lg p-4 transition-all duration-200`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3 flex-1">
+                                <button
+                                  onClick={() => handleToggleTaskStatus(task)}
+                                  className="w-8 h-8 flex items-center justify-center rounded-lg transition-all duration-200 cursor-pointer hover:scale-105 hover:shadow-lg"
+                                >
+                                  {task.status === "done" ? (
+                                    <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                                      <CheckCircle2 className="w-4 h-4 text-white" />
+                                    </div>
+                                  ) : task.status === "in-progress" ? (
+                                    <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center">
+                                      <Clock className="w-4 h-4 text-white" />
+                                    </div>
+                                  ) : (
+                                    <div
+                                      className={`w-8 h-8 ${themeClasses.button.secondary} rounded-lg flex items-center justify-center transition-colors duration-200`}
+                                    >
+                                      <Circle
+                                        className={`w-4 h-4 ${themeClasses.text.secondary}`}
+                                      />
+                                    </div>
+                                  )}
+                                </button>
 
-            {/* Right Panel - Progress & Issues */}
-            <div className="space-y-6 col-span-3 lg:col-span-2">
-              {/* Feature Progress */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-                className="bg-slate-800/30 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-6 shadow-2xl"
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-xl flex items-center justify-center">
-                    <BarChart3 className="w-5 h-5 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white">
-                    Progress Overview
-                  </h3>
-                </div>
-                <div className="space-y-6">
-                  <FeatureProgress
-                    features={project?.features ?? []}
-                    mode="Features"
-                  />
-                  <FeatureProgress
-                    features={project?.features ?? []}
-                    mode="Tasks"
-                  />
-                </div>
-              </motion.div>
+                                <div className="flex-1">
+                                  <h3
+                                    className={`${themeClasses.text.primary} font-medium cursor-pointer hover:text-blue-600 transition-colors`}
+                                    onClick={() =>
+                                      router.push(
+                                        `${projectId}/task/${task.id}`
+                                      )
+                                    }
+                                  >
+                                    {task.name}
+                                  </h3>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <span
+                                      className={`text-xs px-2 py-1 rounded-full font-medium ${
+                                        task.status === "done"
+                                          ? "bg-green-100 text-green-700"
+                                          : task.status === "in-progress"
+                                          ? "bg-yellow-100 text-yellow-700"
+                                          : themeClasses.bg.primary ===
+                                            "bg-white"
+                                          ? "bg-gray-100 text-gray-700"
+                                          : "bg-gray-700 text-gray-300"
+                                      }`}
+                                    >
+                                      {task.status.replace("-", " ")}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
 
-              {/* Issues Section */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6 }}
-                className="bg-slate-800/30 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-6 shadow-2xl"
-              >
+                              <button
+                                onClick={() => handleDeleteTasks(task.id)}
+                                className="w-8 h-8 bg-red-50 hover:bg-red-100 border border-red-200 hover:border-red-300 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200"
+                              >
+                                <Trash2 className="w-4 h-4 text-red-600" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                </div>
+
                 {gitDetails && gitDetails.owner && gitDetails.repo && (
-                  <IssuesDisplay
-                    owner={gitDetails.owner}
-                    repo={gitDetails.repo}
-                    state="open"
-                    perPage={20}
-                  />
+                  <div
+                    className={`mt-6 pt-6 ${themeClasses.border.primary} border-t transition-colors duration-300`}
+                  >
+                    <GitGraph owner={gitDetails.owner} repo={gitDetails.repo} />
+                  </div>
                 )}
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Delete Project Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="mt-8 flex justify-center"
-          >
-            <motion.button
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setShowDeleteModal(true)}
-              className="flex items-center gap-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 rounded-2xl px-8 py-4 text-red-400 hover:text-red-300 transition-all duration-300 backdrop-blur-sm shadow-lg"
+          <div className="space-y-6 col-span-3 lg:col-span-2">
+            <div
+              className={`${themeClasses.bg.secondary} ${themeClasses.border.primary} border rounded-lg p-6 ${themeClasses.shadow.sm} transition-colors duration-300`}
             >
-              <Trash2 className="w-5 h-5" />
-              Delete Project
-            </motion.button>
-          </motion.div>
+              <div className="flex items-center gap-3 mb-6">
+                <div
+                  className={`w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center transition-colors duration-300`}
+                >
+                  <BarChart3 className={`w-4 h-4 text-white`} />
+                </div>
+                <h3
+                  className={`text-lg font-medium ${themeClasses.text.primary} transition-colors duration-300`}
+                >
+                  Progress Overview
+                </h3>
+              </div>
+              <div className="space-y-6">
+                <FeatureProgress
+                  features={project?.features ?? []}
+                  mode="Features"
+                />
+                <FeatureProgress
+                  features={project?.features ?? []}
+                  mode="Tasks"
+                />
+              </div>
+            </div>
 
-          {/* Modals */}
-          <ConfirmDeleteModal
-            isOpen={showDeleteModal}
-            onClose={() => setShowDeleteModal(false)}
-            onConfirm={handleDeleteProject}
-          />
-
-          <AnimatePresence>
-            {showCreateModal && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/60 backdrop-blur-lg flex items-center justify-center z-50"
+            {gitDetails && gitDetails.owner && gitDetails.repo && (
+              <div
+                className={`${themeClasses.bg.secondary} ${themeClasses.border.primary} border rounded-lg p-6 ${themeClasses.shadow.sm} transition-colors duration-300`}
               >
-                {mode === "features" ? (
-                  <CreateFeatureModal
-                    Label="Feature"
-                    isOpen={showCreateModal}
-                    onClose={() => {
-                      setReload(true);
-                      setShowCreateModal(false);
-                    }}
-                    onCreate={(name) => {
-                      handleAddFeature(name);
-                      setShowCreateModal(false);
-                      setReload(true);
-                    }}
-                  />
-                ) : (
-                  <CreateFeatureModal
-                    Label="Task"
-                    isOpen={showCreateModal}
-                    onClose={() => {
-                      setReload(true);
-                      setShowCreateModal(false);
-                    }}
-                    onCreate={(name) => {
-                      handleAddTask(name);
-                      setShowCreateModal(false);
-                      setReload(true);
-                    }}
-                  />
-                )}
-              </motion.div>
+                <IssuesDisplay
+                  owner={gitDetails.owner}
+                  repo={gitDetails.repo}
+                  state="open"
+                  perPage={20}
+                />
+              </div>
             )}
-          </AnimatePresence>
+          </div>
         </div>
+
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="flex items-center gap-2 bg-red-50 hover:bg-red-100 border border-red-200 hover:border-red-300 rounded-lg px-6 py-3 text-red-700 hover:text-red-800 transition-all duration-200"
+          >
+            <Trash2 className="w-4 h-4" />
+            Delete Project
+          </button>
+        </div>
+
+        <ConfirmDeleteModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={handleDeleteProject}
+        />
+
+        {showCreateModal && (
+          <div
+            className={`fixed inset-0 ${
+              themeClasses.bg.primary === "bg-white"
+                ? "bg-black/20"
+                : "bg-black/40"
+            } backdrop-blur-sm flex items-center justify-center z-50 transition-colors duration-300`}
+          >
+            {mode === "features" ? (
+              <CreateFeatureModal
+                Label="Feature"
+                isOpen={showCreateModal}
+                onClose={() => {
+                  setReload(true);
+                  setShowCreateModal(false);
+                }}
+                onCreate={(name) => {
+                  handleAddFeature(name);
+                  setShowCreateModal(false);
+                  setReload(true);
+                }}
+              />
+            ) : (
+              <CreateFeatureModal
+                Label="Task"
+                isOpen={showCreateModal}
+                onClose={() => {
+                  setReload(true);
+                  setShowCreateModal(false);
+                }}
+                onCreate={(name) => {
+                  handleAddTask(name);
+                  setShowCreateModal(false);
+                  setReload(true);
+                }}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

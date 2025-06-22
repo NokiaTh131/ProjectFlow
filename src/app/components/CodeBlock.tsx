@@ -1,7 +1,7 @@
 "use client";
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneLight, oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import {
   Clipboard,
   ClipboardCheck,
@@ -10,6 +10,7 @@ import {
   FileCode,
 } from "lucide-react";
 import { useState } from "react";
+import { useThemeClasses } from '../hooks/useThemeClasses';
 
 interface CodeBlockProps {
   code: string;
@@ -19,6 +20,7 @@ interface CodeBlockProps {
 
 export default function CodeBlock({ code, language, name }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
+  const theme = useThemeClasses();
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(code).then(() => {
@@ -50,22 +52,22 @@ export default function CodeBlock({ code, language, name }: CodeBlockProps) {
       case "javascript":
       case "js":
       case "jsx":
-        return "from-yellow-400 to-yellow-600";
+        return "bg-yellow-100 text-yellow-700";
       case "typescript":
       case "ts":
       case "tsx":
-        return "from-blue-400 to-blue-600";
+        return "bg-blue-100 text-blue-700";
       case "python":
-        return "from-green-400 to-green-600";
+        return "bg-green-100 text-green-700";
       case "bash":
       case "shell":
-        return "from-gray-400 to-gray-600";
+        return "bg-gray-100 text-gray-700";
       case "css":
-        return "from-cyan-400 to-cyan-600";
+        return "bg-cyan-100 text-cyan-700";
       case "html":
-        return "from-orange-400 to-orange-600";
+        return "bg-orange-100 text-orange-700";
       default:
-        return "from-purple-400 to-purple-600";
+        return "bg-purple-100 text-purple-700";
     }
   };
 
@@ -73,19 +75,16 @@ export default function CodeBlock({ code, language, name }: CodeBlockProps) {
 
   return (
     <div className="group relative w-full max-w-6xl">
-      {/* Gradient border effect */}
-      <div className="absolute -inset-0.5 bg-gradient-to-r from-violet-500/20 via-purple-500/20 to-indigo-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur"></div>
-
-      <div className="relative bg-slate-900/90 backdrop-blur-sm border border-slate-600/40 rounded-2xl overflow-hidden shadow-2xl">
+      <div className={`relative ${theme.bg.card} ${theme.border.primary} border rounded-lg overflow-hidden ${theme.shadow.sm} hover:${theme.shadow.md} transition-all duration-300`}>
         {/* Header */}
-        <div className="bg-slate-800/80 backdrop-blur-sm border-b border-slate-600/30 px-6 py-4">
+        <div className={`${theme.bg.secondary} ${theme.border.primary} border-b px-6 py-4 transition-colors duration-300`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               {/* Language badge */}
               <div
-                className={`flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r ${getLanguageColor(
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium ${getLanguageColor(
                   language || "javascript"
-                )} rounded-lg text-white text-sm font-medium shadow-lg`}
+                )}`}
               >
                 {getLanguageIcon(language || "javascript")}
                 <span className="capitalize">{language || "javascript"}</span>
@@ -93,8 +92,8 @@ export default function CodeBlock({ code, language, name }: CodeBlockProps) {
 
               {/* File name */}
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                <h3 className="text-lg font-semibold text-white group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-violet-300 group-hover:to-purple-300 group-hover:bg-clip-text transition-all duration-300">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <h3 className={`text-lg font-semibold ${theme.text.primary} transition-colors duration-300`}>
                   {name}
                 </h3>
               </div>
@@ -102,13 +101,13 @@ export default function CodeBlock({ code, language, name }: CodeBlockProps) {
 
             <div className="flex items-center gap-4">
               {/* Stats */}
-              <div className="flex items-center gap-4 text-sm text-slate-400">
+              <div className={`flex items-center gap-4 text-sm ${theme.text.muted} transition-colors duration-300`}>
                 <span className="flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 bg-slate-400 rounded-full"></div>
+                  <div className={`w-1.5 h-1.5 ${theme.text.muted.replace('text', 'bg')} rounded-full transition-colors duration-300`}></div>
                   {lineCount} lines
                 </span>
                 <span className="flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 bg-slate-400 rounded-full"></div>
+                  <div className={`w-1.5 h-1.5 ${theme.text.muted.replace('text', 'bg')} rounded-full transition-colors duration-300`}></div>
                   {code.length} chars
                 </span>
               </div>
@@ -116,15 +115,14 @@ export default function CodeBlock({ code, language, name }: CodeBlockProps) {
               {/* Copy button */}
               <button
                 onClick={copyToClipboard}
-                className={`group/btn relative overflow-hidden px-4 py-2 rounded-xl font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 ${
+                className={`px-3 py-1.5 rounded-lg font-medium transition-all duration-300 ${
                   copied
-                    ? "bg-gradient-to-r from-emerald-500 to-teal-600 text-white"
-                    : "bg-gradient-to-r from-slate-600 to-slate-700 hover:from-indigo-500 hover:to-purple-600 text-slate-200 hover:text-white"
+                    ? "bg-green-100 text-green-700 border border-green-200"
+                    : `${theme.bg.tertiary} ${theme.bg.hoverSecondary} ${theme.text.secondary} ${theme.border.primary} ${theme.border.hover} border`
                 }`}
                 title="Copy to clipboard"
               >
-                <div className="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
-                <div className="relative flex items-center gap-2">
+                <div className="flex items-center gap-2">
                   {copied ? (
                     <>
                       <ClipboardCheck className="w-4 h-4" />
@@ -144,76 +142,50 @@ export default function CodeBlock({ code, language, name }: CodeBlockProps) {
 
         {/* Code content */}
         <div className="relative">
-          {/* Line numbers background */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 bg-slate-800/60 border-r border-slate-600/30 backdrop-blur-sm"></div>
-
           {/* Scrollable code area */}
-          <div className="max-h-[600px] overflow-auto scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-slate-600 hover:scrollbar-thumb-slate-500">
-            <div className="relative">
-              <SyntaxHighlighter
-                language={language || "javascript"}
-                style={{
-                  ...coldarkDark,
-                  'pre[class*="language-"]': {
-                    ...coldarkDark['pre[class*="language-"]'],
-                    background: "transparent",
-                    margin: 0,
-                    padding: "1.5rem 1.5rem 1.5rem 4rem",
-                    fontSize: "0.875rem",
-                    lineHeight: "1.5",
-                  },
-                  'code[class*="language-"]': {
-                    ...coldarkDark['code[class*="language-"]'],
-                    background: "transparent",
-                    fontSize: "0.875rem",
-                    lineHeight: "1.5",
-                  },
-                }}
-                showLineNumbers={true}
-                lineNumberStyle={{
-                  minWidth: "3rem",
-                  paddingRight: "1rem",
-                  paddingLeft: "1rem",
-                  color: "#64748b",
-                  backgroundColor: "transparent",
-                  borderRight: "none",
-                  fontSize: "0.75rem",
-                  textAlign: "right",
-                }}
-                wrapLongLines={false}
-                customStyle={{
-                  background: "transparent",
-                  margin: 0,
-                  borderRadius: 0,
-                }}
-              >
-                {code}
-              </SyntaxHighlighter>
-            </div>
+          <div className="max-h-[600px] overflow-auto">
+            <SyntaxHighlighter
+              language={language || "javascript"}
+              style={theme.bg.primary.includes('bg-white') ? oneLight : oneDark}
+              showLineNumbers={true}
+              lineNumberStyle={{
+                minWidth: "3rem",
+                paddingRight: "1rem",
+                paddingLeft: "1rem",
+                color: theme.text.muted.includes('text-gray-500') ? "#6b7280" : "#9ca3af",
+                backgroundColor: theme.bg.secondary.includes('bg-gray-50') ? "#f9fafb" : "#374151",
+                borderRight: theme.border.primary.includes('border-gray-200') ? "1px solid #e5e7eb" : "1px solid #4b5563",
+                fontSize: "0.75rem",
+                textAlign: "right",
+              }}
+              customStyle={{
+                background: "transparent",
+                margin: 0,
+                padding: "1rem",
+                fontSize: "0.875rem",
+                lineHeight: "1.6",
+              }}
+              wrapLongLines={true}
+            >
+              {code}
+            </SyntaxHighlighter>
           </div>
-
-          {/* Scroll indicators */}
-          <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-slate-900/60 to-transparent pointer-events-none"></div>
-          <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-slate-900/60 to-transparent pointer-events-none"></div>
         </div>
 
         {/* Footer */}
-        <div className="bg-slate-800/60 backdrop-blur-sm border-t border-slate-600/30 px-6 py-3">
+        <div className={`${theme.bg.secondary} ${theme.border.primary} border-t px-6 py-3 transition-colors duration-300`}>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4 text-xs text-slate-400">
+            <div className={`flex items-center gap-4 text-xs ${theme.text.muted} transition-colors duration-300`}>
               <span>Syntax highlighting powered by Prism</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
+            <div className={`flex items-center gap-2 text-xs ${theme.text.muted} transition-colors duration-300`}>
               <div className="flex items-center gap-1">
-                <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
+                <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
                 <span>Ready</span>
               </div>
             </div>
           </div>
         </div>
-
-        {/* Bottom accent line */}
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500/50 via-purple-500/50 to-indigo-500/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </div>
     </div>
   );

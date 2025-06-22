@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
 import { Feature } from "../project/[id]/page";
+import { motion } from "framer-motion";
+import { useThemeClasses } from '../hooks/useThemeClasses';
 
 interface FeatureProgressProps {
   features: Feature[];
@@ -13,6 +14,7 @@ const FeatureProgress: React.FC<FeatureProgressProps> = ({
   features,
   mode,
 }) => {
+  const theme = useThemeClasses();
   let completedFeatures = 0;
   let totalFeatures = 0;
   let tasks = 0;
@@ -43,7 +45,7 @@ const FeatureProgress: React.FC<FeatureProgressProps> = ({
       : 0;
 
   // Circle properties
-  const radius = 80;
+  const radius = 45;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
@@ -58,47 +60,84 @@ const FeatureProgress: React.FC<FeatureProgressProps> = ({
   const progressColor = getProgressColor(percentage);
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 w-full mx-auto">
-      {/* Title */}
-      <h2 className="text-2xl font-bold text-white mb-6 text-center">
-        {mode} Completion
-      </h2>
+    <div className="flex flex-col items-center justify-center p-6 w-full mx-auto">
+      <h3 className={`text-lg font-medium ${theme.text.primary} mb-6 text-center transition-colors duration-300`}>
+        {mode} Progress
+      </h3>
 
-      {/* Circular Progress */}
+      {/* <div className="relative">
+        <svg
+          className="transform -rotate-90"
+          width="120"
+          height="120"
+          viewBox="0 0 120 120"
+        >
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#f3f4f6"
+            strokeWidth="6"
+            fill="transparent"
+          />
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke={progressColor}
+            strokeWidth="6"
+            fill="transparent"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={strokeDashoffset}
+            className="transition-all duration-1000 ease-out"
+          />
+        </svg>
+
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className="text-center">
+            <div className="text-2xl font-semibold text-gray-900 mb-1">
+              {percentage}%
+            </div>
+            <div className="text-gray-500 text-xs">Complete</div>
+          </div>
+        </div>
+      </div> */}
+
       <div className="relative">
         <svg
           className="transform -rotate-90"
-          width="200"
-          height="200"
-          viewBox="0 0 200 200"
+          width="120"
+          height="120"
+          viewBox="0 0 120 120"
         >
           {/* Background circle */}
           <circle
-            cx="100"
-            cy="100"
+            cx="60"
+            cy="60"
             r={radius}
-            stroke="#374151"
-            strokeWidth="12"
+            stroke={theme.text.muted.includes('text-gray-500') ? '#6b7280' : '#374151'}
+            strokeWidth="6"
             fill="transparent"
             className="opacity-30"
           />
 
           {/* Progress circle */}
           <motion.circle
-            cx="100"
-            cy="100"
+            cx="60"
+            cy="60"
             r={radius}
             stroke={progressColor}
-            strokeWidth="12"
+            strokeWidth="6"
             fill="transparent"
             strokeLinecap="round"
             strokeDasharray={circumference}
             initial={{ strokeDashoffset: circumference }}
             animate={{ strokeDashoffset }}
             transition={{
-              duration: 2,
+              duration: 1,
               ease: "easeInOut",
-              delay: 0.5,
+              delay: 0.1,
             }}
             className="drop-shadow-lg"
             style={{
@@ -110,55 +149,47 @@ const FeatureProgress: React.FC<FeatureProgressProps> = ({
         {/* Center content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <motion.div
-            initial={{ scale: 0, opacity: 0 }}
+            initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1 }}
+            transition={{ duration: 0.2, delay: 0.1 }}
             className="text-center"
           >
-            <div className="text-4xl font-bold text-white mb-1">
+            <div className={`text-2xl font-semibold ${theme.text.primary} mb-1 transition-colors duration-300`}>
               {percentage}%
             </div>
-            <div className="text-gray-300 text-sm">Complete</div>
+            <div className={`${theme.text.muted} text-xs transition-colors duration-300`}>Complete</div>
           </motion.div>
         </div>
       </div>
 
-      {/* Stats */}
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 1.2 }}
-        className="mt-6 flex justify-between w-full max-w-xs"
-      >
-        <div className="text-center">
-          <div className="text-2xl font-bold text-teal-400">
+      <div className="mt-6 grid grid-cols-4 gap-3 w-full max-w-xs text-center">
+        <div>
+          <div className="text-base font-medium text-green-600">
             {completedFeatures}
           </div>
-          <div className="text-gray-400 text-xs">Completed</div>
+          <div className={`${theme.text.muted} text-xs transition-colors duration-300`}>Done</div>
         </div>
         {mode === "Tasks" && (
-          <div className="text-center">
-            <div className="text-2xl font-bold text-yellow-400">
+          <div>
+            <div className="text-base font-medium text-yellow-600">
               {doing_task}
             </div>
-            <div className="text-gray-400 text-xs">Doing</div>
+            <div className={`${theme.text.muted} text-xs transition-colors duration-300`}>Active</div>
           </div>
         )}
-
-        <div className="text-center">
-          <div className="text-2xl font-bold text-gray-300">
+        <div>
+          <div className="text-base font-medium text-gray-600">
             {totalFeatures - completedFeatures}
           </div>
-          <div className="text-gray-400 text-xs">Remaining</div>
+          <div className={`${theme.text.muted} text-xs transition-colors duration-300`}>Left</div>
         </div>
-
-        <div className="text-center">
-          <div className="text-2xl font-bold text-cyan-400">
+        <div>
+          <div className="text-base font-medium text-blue-600">
             {totalFeatures}
           </div>
-          <div className="text-gray-400 text-xs">Total</div>
+          <div className={`${theme.text.muted} text-xs transition-colors duration-300`}>Total</div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
